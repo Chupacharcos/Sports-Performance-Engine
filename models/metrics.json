@@ -1,0 +1,36 @@
+{
+  "lgbm_accuracy": 0.38,
+  "xgb_accuracy": 0.37555555555555553,
+  "ensemble_accuracy": 0.37777777777777777,
+  "n_train": 2100,
+  "n_test": 450,
+  "feature_cols": [
+    "home_xg_for_avg",
+    "home_xg_against_avg",
+    "home_goals_avg",
+    "home_conceded_avg",
+    "home_form_pts",
+    "home_shots_avg",
+    "home_pressures_avg",
+    "away_xg_for_avg",
+    "away_xg_against_avg",
+    "away_goals_avg",
+    "away_conceded_avg",
+    "away_form_pts",
+    "away_shots_avg",
+    "away_pressures_avg",
+    "xg_diff_rolling",
+    "form_diff",
+    "shots_diff_avg"
+  ],
+  "feature_importance": {
+    "home_goals_avg": 0.024870623074857566,
+    "home_xg_for_avg": 0.02236813947637344,
+    "home_xg_against_avg": 0.013165279312468652
+  },
+  "class_distribution": {
+    "home_win": 0.35133333333333333,
+    "draw": 0.38433333333333336,
+    "away_win": 0.2643333333333333
+  }
+}
