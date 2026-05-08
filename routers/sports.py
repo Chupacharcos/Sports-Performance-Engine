@@ -247,3 +247,62 @@ def get_competitions():
             return {"competitions": ["LaLiga 2022/23", "Champions League 2022/23"]}
     comps = _matches_df["competition"].dropna().unique().tolist() if "competition" in _matches_df.columns else []
     return {"competitions": sorted(comps)}
+
+
+# ── Live data desde API-Football v3 ──────────────────────────────────────────
+
+@router.get("/sports/live/upcoming")
+def live_upcoming(competition: str = "laliga", n: int = 8):
+    """Próximos N partidos en tiempo real desde API-Football."""
+    try:
+        from scripts.api_football import get_upcoming_fixtures, LEAGUE_LALIGA, LEAGUE_CHAMPIONS
+        league = LEAGUE_CHAMPIONS if "champions" in competition.lower() else LEAGUE_LALIGA
+        fixtures = get_upcoming_fixtures(league=league, n=n)
+        out = []
+        for f in fixtures:
+            teams = f.get("teams", {})
+            fix = f.get("fixture", {})
+            out.append({
+                "match_id": fix.get("id"),
+                "home_team": teams.get("home", {}).get("name"),
+                "away_team": teams.get("away", {}).get("name"),
+                "home_logo": teams.get("home", {}).get("logo"),
+                "away_logo": teams.get("away", {}).get("logo"),
+                "match_date": fix.get("date"),
+                "venue": fix.get("venue", {}).get("name"),
+                "status": fix.get("status", {}).get("short"),
+            })
+        return {"competition": competition, "upcoming": out, "source": "API-Football v3"}
+    except RuntimeError as e:
+        raise HTTPException(503, str(e))
+    except Exception as e:
+        raise HTTPException(500, f"Error consultando API-Football: {e}")
+
+
+@router.get("/sports/live/standings")
+def live_standings(competition: str = "laliga"):
+    """Tabla actual de la liga desde API-Football."""
+    try:
+        from scripts.api_football import get_standings, LEAGUE_LALIGA, LEAGUE_CHAMPIONS
+        league = LEAGUE_CHAMPIONS if "champions" in competition.lower() else LEAGUE_LALIGA
+        standings = get_standings(league=league)
+        out = []
+        for row in standings:
+            team = row.get("team", {})
+            out.append({
+                "rank": row.get("rank"),
+                "team": team.get("name"),
+                "logo": team.get("logo"),
+                "points": row.get("points"),
+                "played": row.get("all", {}).get("played"),
+                "wins": row.get("all", {}).get("win"),
+                "draws": row.get("all", {}).get("draw"),
+                "losses": row.get("all", {}).get("lose"),
+                "goals_for": row.get("all", {}).get("goals", {}).get("for"),
+                "goals_against": row.get("all", {}).get("goals", {}).get("against"),
+            })
+        return {"competition": competition, "standings": out, "source": "API-Football v3"}
+    except RuntimeError as e:
+        raise HTTPException(503, str(e))
+    except Exception as e:
+        raise HTTPException(500, f"Error consultando API-Football: {e}")
