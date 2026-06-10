@@ -1,226 +1,232 @@
 {
-  "Manchester City": {
-    "xg_for_avg": 1.2622,
-    "xg_against_avg": 0.2652,
-    "goals_avg": 2.2,
-    "conceded_avg": 0.4,
-    "form_pts": 12.0,
-    "pressures_avg": 49.8
+  "Alaves": {
+    "elo": 1511.2,
+    "gf_avg5": 1.2,
+    "ga_avg5": 1.4,
+    "sot_avg5": 4.6,
+    "sota_avg5": 3.2,
+    "form5": 7.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 2.0
   },
-  "Granada": {
-    "xg_for_avg": 0.34920000000000007,
-    "xg_against_avg": 0.8425999999999998,
-    "goals_avg": 0.6,
-    "conceded_avg": 0.2,
-    "form_pts": 8.0,
-    "pressures_avg": 32.8
+  "Ath Bilbao": {
+    "elo": 1550.8,
+    "gf_avg5": 1.4,
+    "ga_avg5": 2.0,
+    "sot_avg5": 4.6,
+    "sota_avg5": 4.4,
+    "form5": 4.0,
+    "gf_home_avg": 1.0,
+    "gf_away_avg": 1.6
   },
-  "Real Madrid": {
-    "xg_for_avg": 1.303,
-    "xg_against_avg": 0.7114,
-    "goals_avg": 1.6,
-    "conceded_avg": 0.8,
-    "form_pts": 12.0,
-    "pressures_avg": 45.6
-  },
-  "Rayo Vallecano": {
-    "xg_for_avg": 0.34400000000000003,
-    "xg_against_avg": 1.2222,
-    "goals_avg": 0.2,
-    "conceded_avg": 1.0,
-    "form_pts": 2.0,
-    "pressures_avg": 34.4
-  },
-  "Valencia": {
-    "xg_for_avg": 0.5794,
-    "xg_against_avg": 0.954,
-    "goals_avg": 0.8,
-    "conceded_avg": 1.4,
-    "form_pts": 5.0,
-    "pressures_avg": 35.8
-  },
-  "Villarreal": {
-    "xg_for_avg": 1.2452,
-    "xg_against_avg": 0.8678000000000001,
-    "goals_avg": 0.8,
-    "conceded_avg": 0.6,
-    "form_pts": 5.0,
-    "pressures_avg": 36.2
-  },
-  "Girona": {
-    "xg_for_avg": 1.5184000000000002,
-    "xg_against_avg": 1.0348000000000002,
-    "goals_avg": 1.8,
-    "conceded_avg": 1.0,
-    "form_pts": 8.0,
-    "pressures_avg": 35.0
-  },
-  "Atl\u00e9tico de Madrid": {
-    "xg_for_avg": 0.6838,
-    "xg_against_avg": 0.9002000000000001,
-    "goals_avg": 0.2,
-    "conceded_avg": 1.8,
-    "form_pts": 4.0,
-    "pressures_avg": 43.2
-  },
-  "Sevilla": {
-    "xg_for_avg": 0.16460000000000002,
-    "xg_against_avg": 0.9124000000000001,
-    "goals_avg": 0.0,
-    "conceded_avg": 1.2,
-    "form_pts": 1.0,
-    "pressures_avg": 40.4
+  "Ath Madrid": {
+    "elo": 1663.9,
+    "gf_avg5": 1.2,
+    "ga_avg5": 1.4,
+    "sot_avg5": 4.2,
+    "sota_avg5": 5.0,
+    "form5": 9.0,
+    "gf_home_avg": 1.2,
+    "gf_away_avg": 1.6
   },
   "Barcelona": {
-    "xg_for_avg": 0.7538,
-    "xg_against_avg": 0.29700000000000004,
-    "goals_avg": 1.2,
-    "conceded_avg": 0.6,
-    "form_pts": 12.0,
-    "pressures_avg": 51.4
+    "elo": 1812.0,
+    "gf_avg5": 1.6,
+    "ga_avg5": 1.2,
+    "sot_avg5": 4.8,
+    "sota_avg5": 3.2,
+    "form5": 9.0,
+    "gf_home_avg": 2.2,
+    "gf_away_avg": 1.4
   },
-  "Celta de Vigo": {
-    "xg_for_avg": 0.41839999999999994,
-    "xg_against_avg": 1.0024,
-    "goals_avg": 0.2,
-    "conceded_avg": 0.8,
-    "form_pts": 3.0,
-    "pressures_avg": 34.2
+  "Betis": {
+    "elo": 1626.4,
+    "gf_avg5": 2.0,
+    "ga_avg5": 1.4,
+    "sot_avg5": 5.6,
+    "sota_avg5": 5.8,
+    "form5": 10.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 1.6
   },
-  "Las Palmas": {
-    "xg_for_avg": 0.6472,
-    "xg_against_avg": 0.7986000000000001,
-    "goals_avg": 0.8,
-    "conceded_avg": 1.0,
-    "form_pts": 6.0,
-    "pressures_avg": 39.4
+  "Celta": {
+    "elo": 1570.6,
+    "gf_avg5": 1.6,
+    "ga_avg5": 1.0,
+    "sot_avg5": 3.2,
+    "sota_avg5": 5.0,
+    "form5": 10.0,
+    "gf_home_avg": 1.8,
+    "gf_away_avg": 1.2
   },
-  "Real Sociedad": {
-    "xg_for_avg": 1.5824,
-    "xg_against_avg": 0.45779999999999993,
-    "goals_avg": 2.2,
-    "conceded_avg": 0.4,
-    "form_pts": 12.0,
-    "pressures_avg": 37.2
+  "Elche": {
+    "elo": 1482.6,
+    "gf_avg5": 1.0,
+    "ga_avg5": 1.4,
+    "sot_avg5": 3.0,
+    "sota_avg5": 4.4,
+    "form5": 5.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 1.0
   },
-  "Athletic Club": {
-    "xg_for_avg": 0.6888,
-    "xg_against_avg": 1.6006,
-    "goals_avg": 0.6,
-    "conceded_avg": 1.8,
-    "form_pts": 5.0,
-    "pressures_avg": 32.8
-  },
-  "Osasuna": {
-    "xg_for_avg": 0.46939999999999993,
-    "xg_against_avg": 0.9704,
-    "goals_avg": 0.6,
-    "conceded_avg": 1.4,
-    "form_pts": 3.0,
-    "pressures_avg": 35.0
-  },
-  "C\u00e1diz": {
-    "xg_for_avg": 0.19140000000000001,
-    "xg_against_avg": 0.6439999999999999,
-    "goals_avg": 0.4,
-    "conceded_avg": 0.4,
-    "form_pts": 8.0,
-    "pressures_avg": 32.0
-  },
-  "Inter Milan": {
-    "xg_for_avg": 0.7587999999999999,
-    "xg_against_avg": 0.538,
-    "goals_avg": 1.2,
-    "conceded_avg": 0.2,
-    "form_pts": 8.0,
-    "pressures_avg": 46.6
-  },
-  "Benfica": {
-    "xg_for_avg": 1.379,
-    "xg_against_avg": 0.157,
-    "goals_avg": 2.0,
-    "conceded_avg": 0.4,
-    "form_pts": 12.0,
-    "pressures_avg": 45.8
-  },
-  "Bayern Munich": {
-    "xg_for_avg": 1.5756000000000001,
-    "xg_against_avg": 0.135,
-    "goals_avg": 1.2,
-    "conceded_avg": 0.2,
-    "form_pts": 10.0,
-    "pressures_avg": 44.8
-  },
-  "PSG": {
-    "xg_for_avg": 1.5248000000000002,
-    "xg_against_avg": 0.6868000000000001,
-    "goals_avg": 0.8,
-    "conceded_avg": 1.0,
-    "form_pts": 7.0,
-    "pressures_avg": 55.2
-  },
-  "Mallorca": {
-    "xg_for_avg": 0.4932,
-    "xg_against_avg": 1.6994,
-    "goals_avg": 0.2,
-    "conceded_avg": 2.0,
-    "form_pts": 1.0,
-    "pressures_avg": 31.8
-  },
-  "Real Betis": {
-    "xg_for_avg": 0.917,
-    "xg_against_avg": 0.6093999999999999,
-    "goals_avg": 1.4,
-    "conceded_avg": 0.4,
-    "form_pts": 9.0,
-    "pressures_avg": 38.4
+  "Espanol": {
+    "elo": 1494.7,
+    "gf_avg5": 1.2,
+    "ga_avg5": 1.2,
+    "sot_avg5": 4.8,
+    "sota_avg5": 5.4,
+    "form5": 7.0,
+    "gf_home_avg": 0.8,
+    "gf_away_avg": 0.8
   },
   "Getafe": {
-    "xg_for_avg": 0.9,
-    "xg_against_avg": 0.9039999999999999,
-    "goals_avg": 1.4,
-    "conceded_avg": 1.2,
-    "form_pts": 10.0,
-    "pressures_avg": 36.4
+    "elo": 1525.5,
+    "gf_avg5": 0.8,
+    "ga_avg5": 0.8,
+    "sot_avg5": 2.8,
+    "sota_avg5": 4.0,
+    "form5": 7.0,
+    "gf_home_avg": 1.2,
+    "gf_away_avg": 0.6
   },
-  "Alav\u00e9s": {
-    "xg_for_avg": 0.44460000000000005,
-    "xg_against_avg": 1.3530000000000002,
-    "goals_avg": 0.4,
-    "conceded_avg": 2.2,
-    "form_pts": 3.0,
-    "pressures_avg": 30.4
+  "Girona": {
+    "elo": 1508.3,
+    "gf_avg5": 0.6,
+    "ga_avg5": 1.0,
+    "sot_avg5": 6.2,
+    "sota_avg5": 3.2,
+    "form5": 3.0,
+    "gf_home_avg": 1.0,
+    "gf_away_avg": 0.6
   },
-  "Almer\u00eda": {
-    "xg_for_avg": 0.5192,
-    "xg_against_avg": 1.2803999999999998,
-    "goals_avg": 1.2,
-    "conceded_avg": 1.0,
-    "form_pts": 7.0,
-    "pressures_avg": 29.2
+  "Las Palmas": {
+    "elo": 1404.9,
+    "gf_avg5": 0.4,
+    "ga_avg5": 1.6,
+    "sot_avg5": 3.0,
+    "sota_avg5": 4.0,
+    "form5": 0.0,
+    "gf_home_avg": 0.8,
+    "gf_away_avg": 0.8
   },
-  "Borussia Dortmund": {
-    "xg_for_avg": 0.755,
-    "xg_against_avg": 0.4756,
-    "goals_avg": 0.2,
-    "conceded_avg": 0.4,
-    "form_pts": 5.0,
-    "pressures_avg": 44.6
+  "Leganes": {
+    "elo": 1490.5,
+    "gf_avg5": 1.8,
+    "ga_avg5": 1.4,
+    "sot_avg5": 4.8,
+    "sota_avg5": 5.0,
+    "form5": 10.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 1.0
   },
-  "Napoli": {
-    "xg_for_avg": 1.5184000000000002,
-    "xg_against_avg": 0.0528,
-    "goals_avg": 1.4,
-    "conceded_avg": 0.0,
-    "form_pts": 15.0,
-    "pressures_avg": 43.0
+  "Levante": {
+    "elo": 1508.7,
+    "gf_avg5": 2.0,
+    "ga_avg5": 2.2,
+    "sot_avg5": 6.2,
+    "sota_avg5": 5.6,
+    "form5": 9.0,
+    "gf_home_avg": 2.4,
+    "gf_away_avg": 1.0
   },
-  "Arsenal": {
-    "xg_for_avg": 1.124,
-    "xg_against_avg": 0.2972,
-    "goals_avg": 1.2,
-    "conceded_avg": 0.2,
-    "form_pts": 11.0,
-    "pressures_avg": 44.4
+  "Mallorca": {
+    "elo": 1502.6,
+    "gf_avg5": 1.2,
+    "ga_avg5": 1.2,
+    "sot_avg5": 4.8,
+    "sota_avg5": 2.6,
+    "form5": 7.0,
+    "gf_home_avg": 2.0,
+    "gf_away_avg": 0.8
+  },
+  "Osasuna": {
+    "elo": 1506.7,
+    "gf_avg5": 1.0,
+    "ga_avg5": 2.0,
+    "sot_avg5": 5.0,
+    "sota_avg5": 5.2,
+    "form5": 0.0,
+    "gf_home_avg": 1.2,
+    "gf_away_avg": 1.0
+  },
+  "Oviedo": {
+    "elo": 1445.9,
+    "gf_avg5": 0.0,
+    "ga_avg5": 1.8,
+    "sot_avg5": 2.0,
+    "sota_avg5": 4.8,
+    "form5": 1.0,
+    "gf_home_avg": 0.6,
+    "gf_away_avg": 1.0
+  },
+  "Real Madrid": {
+    "elo": 1778.8,
+    "gf_avg5": 1.8,
+    "ga_avg5": 0.8,
+    "sot_avg5": 4.4,
+    "sota_avg5": 3.8,
+    "form5": 12.0,
+    "gf_home_avg": 2.4,
+    "gf_away_avg": 1.0
+  },
+  "Sevilla": {
+    "elo": 1494.8,
+    "gf_avg5": 1.2,
+    "ga_avg5": 1.0,
+    "sot_avg5": 4.8,
+    "sota_avg5": 2.6,
+    "form5": 9.0,
+    "gf_home_avg": 1.0,
+    "gf_away_avg": 0.8
+  },
+  "Sociedad": {
+    "elo": 1531.4,
+    "gf_avg5": 1.4,
+    "ga_avg5": 1.8,
+    "sot_avg5": 3.0,
+    "sota_avg5": 5.8,
+    "form5": 3.0,
+    "gf_home_avg": 2.0,
+    "gf_away_avg": 1.2
+  },
+  "Valencia": {
+    "elo": 1558.6,
+    "gf_avg5": 1.8,
+    "ga_avg5": 1.4,
+    "sot_avg5": 3.6,
+    "sota_avg5": 3.8,
+    "form5": 10.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 1.6
+  },
+  "Valladolid": {
+    "elo": 1336.1,
+    "gf_avg5": 0.4,
+    "ga_avg5": 1.8,
+    "sot_avg5": 3.6,
+    "sota_avg5": 5.2,
+    "form5": 0.0,
+    "gf_home_avg": 0.6,
+    "gf_away_avg": 1.0
+  },
+  "Vallecano": {
+    "elo": 1565.2,
+    "gf_avg5": 1.6,
+    "ga_avg5": 0.6,
+    "sot_avg5": 5.6,
+    "sota_avg5": 4.8,
+    "form5": 11.0,
+    "gf_home_avg": 1.6,
+    "gf_away_avg": 1.0
+  },
+  "Villarreal": {
+    "elo": 1661.4,
+    "gf_avg5": 2.6,
+    "ga_avg5": 1.6,
+    "sot_avg5": 4.8,
+    "sota_avg5": 5.4,
+    "form5": 7.0,
+    "gf_home_avg": 3.4,
+    "gf_away_avg": 0.8
   }
 }

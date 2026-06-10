@@ -78,8 +78,21 @@ def get_stats():
             "lgbm_accuracy": round(_metrics.get("lgbm_accuracy", 0), 4),
             "xgb_accuracy": round(_metrics.get("xgb_accuracy", 0), 4),
             "ensemble_accuracy": round(_metrics.get("ensemble_accuracy", 0), 4),
+            "ensemble_log_loss": _metrics.get("ensemble_log_loss"),
             "n_train": _metrics.get("n_train", 0),
+            "n_test": _metrics.get("n_test", 0),
         },
+        # Baselines honestos: el mercado de cierre es el techo práctico
+        "baselines": {
+            "majority_accuracy": _metrics.get("baseline_majority_accuracy"),
+            "market_accuracy": _metrics.get("market_accuracy"),
+            "market_log_loss": _metrics.get("market_log_loss"),
+            "model_vs_market_gap": _metrics.get("model_vs_market_accuracy_gap"),
+        },
+        "dataset": _metrics.get("dataset"),
+        "n_matches_total": _metrics.get("n_matches_total"),
+        "test_seasons": _metrics.get("test_seasons"),
+        "honest_note": _metrics.get("honest_note"),
         "class_distribution": _metrics.get("class_distribution", {}),
         "feature_importance": dict(list(_metrics.get("feature_importance", {}).items())[:8]),
     }
@@ -94,14 +107,13 @@ def get_teams():
     for name, stats in (_team_summary or {}).items():
         teams.append({
             "team": name,
-            "xg_for_avg": round(stats.get("xg_for_avg", 0), 2),
-            "xg_against_avg": round(stats.get("xg_against_avg", 0), 2),
-            "goals_avg": round(stats.get("goals_avg", 0), 2),
-            "conceded_avg": round(stats.get("conceded_avg", 0), 2),
-            "form_pts_last5": int(stats.get("form_pts", 0)),
-            "pressures_avg": round(stats.get("pressures_avg", 0), 1),
+            "elo": round(stats.get("elo", 1500), 0),
+            "goals_avg": round(stats.get("gf_avg5", 0), 2),
+            "conceded_avg": round(stats.get("ga_avg5", 0), 2),
+            "sot_avg": round(stats.get("sot_avg5", 0), 2),
+            "form_pts_last5": int(stats.get("form5", 0)),
         })
-    teams.sort(key=lambda x: -x["form_pts_last5"])
+    teams.sort(key=lambda x: -x["elo"])
     return {"teams": teams}
 
 
@@ -113,32 +125,30 @@ def predict_match(req: MatchPredictRequest):
 
     team_data = _team_summary or {}
 
-    def get_team_features(team, is_home=True):
+    def team_stats(team, is_home):
         ts = team_data.get(team, {})
         return {
-            "xg_for_avg": ts.get("xg_for_avg", 1.2 if is_home else 0.9),
-            "xg_against_avg": ts.get("xg_against_avg", 0.9 if is_home else 1.1),
-            "goals_avg": ts.get("goals_avg", 1.4 if is_home else 1.1),
-            "conceded_avg": ts.get("conceded_avg", 1.0 if is_home else 1.2),
-            "form_pts": ts.get("form_pts", 7.5) / 15,
-            "shots_avg": 11.0 if is_home else 9.0,
-            "pressures_avg": ts.get("pressures_avg", 35.0 if is_home else 28.0),
+            "elo": ts.get("elo", 1500.0),
+            "gf_avg5": ts.get("gf_avg5", 1.3 if is_home else 1.0),
+            "ga_avg5": ts.get("ga_avg5", 1.1 if is_home else 1.3),
+            "sot_avg5": ts.get("sot_avg5", 4.5 if is_home else 3.8),
+            "sota_avg5": ts.get("sota_avg5", 3.8 if is_home else 4.5),
+            "form5": ts.get("form5", 6.0),
+            "gf_side": ts.get("gf_home_avg" if is_home else "gf_away_avg", 1.2 if is_home else 0.9),
         }
 
-    home_f = get_team_features(req.home_team, True)
-    away_f = get_team_features(req.away_team, False)
+    h, a = team_stats(req.home_team, True), team_stats(req.away_team, False)
+    form_home = req.home_form_pts if req.home_form_pts is not None else h["form5"]
+    form_away = req.away_form_pts if req.away_form_pts is not None else a["form5"]
 
-    form_home = req.home_form_pts / 15 if req.home_form_pts is not None else home_f["form_pts"]
-    form_away = req.away_form_pts / 15 if req.away_form_pts is not None else away_f["form_pts"]
-
+    # Mismo orden que FEATURE_COLS del entrenamiento (fetch_real_data.FEATURE_COLS)
     features = [
-        home_f["xg_for_avg"], home_f["xg_against_avg"], home_f["goals_avg"],
-        home_f["conceded_avg"], form_home, home_f["shots_avg"], home_f["pressures_avg"],
-        away_f["xg_for_avg"], away_f["xg_against_avg"], away_f["goals_avg"],
-        away_f["conceded_avg"], form_away, away_f["shots_avg"], away_f["pressures_avg"],
-        home_f["xg_for_avg"] - away_f["xg_for_avg"],
+        h["elo"], a["elo"], h["elo"] - a["elo"],
+        h["gf_avg5"], h["ga_avg5"], h["sot_avg5"], h["sota_avg5"], form_home,
+        a["gf_avg5"], a["ga_avg5"], a["sot_avg5"], a["sota_avg5"], form_away,
+        h["gf_side"], a["gf_side"],
         form_home - form_away,
-        home_f["shots_avg"] - away_f["shots_avg"],
+        h["sot_avg5"] - a["sot_avg5"],
     ]
 
     X = np.array([features])
@@ -159,13 +169,13 @@ def predict_match(req: MatchPredictRequest):
             "draw": round(float(ensemble_proba[1]), 3),
             "away_win": round(float(ensemble_proba[2]), 3),
         },
-        "home_stats": {k: round(v, 2) for k, v in home_f.items()},
-        "away_stats": {k: round(v, 2) for k, v in away_f.items()},
-        "expected_goals": {
-            "home_xg": round(home_f["xg_for_avg"] * 0.9, 2),
-            "away_xg": round(away_f["xg_for_avg"] * 0.85, 2),
-        },
-        "disclaimer": "Predicción estadística. No es asesoramiento de apuestas.",
+        "home_stats": {"elo": round(h["elo"], 0), "goles_favor_5": round(h["gf_avg5"], 2),
+                       "goles_contra_5": round(h["ga_avg5"], 2), "tiros_puerta_5": round(h["sot_avg5"], 2),
+                       "forma_5": round(form_home, 1)},
+        "away_stats": {"elo": round(a["elo"], 0), "goles_favor_5": round(a["gf_avg5"], 2),
+                       "goles_contra_5": round(a["ga_avg5"], 2), "tiros_puerta_5": round(a["sot_avg5"], 2),
+                       "forma_5": round(form_away, 1)},
+        "disclaimer": "Predicción estadística sobre datos reales de LaLiga. No es asesoramiento de apuestas.",
     }
 
 
@@ -175,8 +185,8 @@ def get_recent_matches(limit: int = 20, competition: Optional[str] = None):
         if not load_models():
             raise HTTPException(503, "Datos no disponibles")
     df = _matches_df.copy()
-    if competition and "competition" in df.columns:
-        df = df[df["competition"].str.contains(competition, case=False, na=False)]
+    if competition and "season" in df.columns:
+        df = df[df["season"].astype(str).str.contains(competition, case=False, na=False)]
     df = df.sort_values("match_date", ascending=False).head(limit)
 
     matches = []
@@ -187,10 +197,12 @@ def get_recent_matches(limit: int = 20, competition: Optional[str] = None):
             "away_team": row["away_team"],
             "home_score": int(row.get("home_score", 0)),
             "away_score": int(row.get("away_score", 0)),
-            "home_xg": round(float(row.get("home_xg", 0)), 2),
-            "away_xg": round(float(row.get("away_xg", 0)), 2),
-            "competition": row.get("competition", ""),
-            "match_date": str(row.get("match_date", "")),
+            "home_elo": round(float(row.get("home_elo", 1500))),
+            "away_elo": round(float(row.get("away_elo", 1500))),
+            "mkt_ph": round(float(row.get("mkt_ph", 0)), 3) if pd.notna(row.get("mkt_ph")) else None,
+            "mkt_pa": round(float(row.get("mkt_pa", 0)), 3) if pd.notna(row.get("mkt_pa")) else None,
+            "season": str(row.get("season", "")),
+            "match_date": str(row.get("match_date", ""))[:10],
         })
     return {"matches": matches, "total": len(matches)}
 
@@ -204,18 +216,19 @@ def get_match_detail(match_id: int):
     if len(row) == 0:
         raise HTTPException(404, f"Partido {match_id} no encontrado")
     r = row.iloc[0].to_dict()
-    # Hacer predicción retroactiva
+    # Predicción retroactiva con la forma real pre-partido del dataset
     pred_req = MatchPredictRequest(
         home_team=r["home_team"],
         away_team=r["away_team"],
-        home_form_pts=float(r.get("home_form_pts", 7.5)),
-        away_form_pts=float(r.get("away_form_pts", 6.0)),
+        home_form_pts=float(r.get("home_form5", 6.0)),
+        away_form_pts=float(r.get("away_form5", 6.0)),
     )
     try:
         prediction = predict_match(pred_req)
     except Exception:
         prediction = None
 
+    outcome_map = {"H": "Victoria local", "D": "Empate", "A": "Victoria visitante"}
     return {
         "match_id": match_id,
         "home_team": r["home_team"],
@@ -223,20 +236,20 @@ def get_match_detail(match_id: int):
         "result": {
             "home_score": int(r.get("home_score", 0)),
             "away_score": int(r.get("away_score", 0)),
-            "outcome": ["Victoria local", "Empate", "Victoria visitante"][int(r.get("result", 0))],
+            "outcome": outcome_map.get(str(r.get("result", "")), "—"),
         },
         "metrics": {
-            "home_xg": round(float(r.get("home_xg", 0)), 3),
-            "away_xg": round(float(r.get("away_xg", 0)), 3),
-            "home_shots": int(r.get("home_shots_match", 0)),
-            "away_shots": int(r.get("away_shots_match", 0)),
-            "home_possession": round(float(r.get("home_possession", 50)), 1),
-            "home_pressures": int(r.get("home_pressures", 0)),
-            "away_pressures": int(r.get("away_pressures", 0)),
+            "home_elo": round(float(r.get("home_elo", 1500))),
+            "away_elo": round(float(r.get("away_elo", 1500))),
+            "home_sot_avg5": round(float(r.get("home_sot_avg5", 0)), 2),
+            "away_sot_avg5": round(float(r.get("away_sot_avg5", 0)), 2),
+            "market_prob_home": round(float(r.get("mkt_ph", 0)), 3) if pd.notna(r.get("mkt_ph")) else None,
+            "market_prob_draw": round(float(r.get("mkt_pd", 0)), 3) if pd.notna(r.get("mkt_pd")) else None,
+            "market_prob_away": round(float(r.get("mkt_pa", 0)), 3) if pd.notna(r.get("mkt_pa")) else None,
         },
         "pre_match_prediction": prediction,
-        "competition": r.get("competition", ""),
-        "match_date": str(r.get("match_date", "")),
+        "season": str(r.get("season", "")),
+        "match_date": str(r.get("match_date", ""))[:10],
     }
 
 
@@ -244,9 +257,9 @@ def get_match_detail(match_id: int):
 def get_competitions():
     if _matches_df is None:
         if not load_models():
-            return {"competitions": ["LaLiga 2022/23", "Champions League 2022/23"]}
-    comps = _matches_df["competition"].dropna().unique().tolist() if "competition" in _matches_df.columns else []
-    return {"competitions": sorted(comps)}
+            return {"competitions": []}
+    seasons = _matches_df["season"].dropna().unique().tolist() if "season" in _matches_df.columns else []
+    return {"competitions": sorted(f"LaLiga {s[:2]}/{s[2:]}" for s in seasons)}
 
 
 # ── Live data desde API-Football v3 ──────────────────────────────────────────

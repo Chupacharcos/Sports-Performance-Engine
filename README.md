@@ -1,103 +1,65 @@
 # Sports Performance Engine
 
-Motor de análisis de rendimiento deportivo que combina **LightGBM + XGBoost ensemble** con datos de **StatsBomb Open Data** para predecir resultados de LaLiga y Champions League.
+Predictor de resultados (1X2) de **LaLiga** entrenado con **6.000+ partidos
+reales de 16 temporadas** (football-data.co.uk, datos públicos sin API key) y
+evaluado honestamente contra el techo práctico de esta tarea: las cuotas de
+cierre de los bookies.
 
-## Demo en vivo
+- **Demo:** https://adrianmoreno-dev.com/demo/sports-engine
+- **Puerto:** 8001 — `sports-engine.service`
 
-[adrianmoreno-dev.com/demo/sports-engine](https://adrianmoreno-dev.com/demo/sports-engine)
+## Resultados honestos (split temporal, test = temporadas 24/25 y 25/26)
 
-## Arquitectura
+|                          | Accuracy | Log-loss |
+|--------------------------|---------:|---------:|
+| Baseline "siempre local" |   46.7%  |    —     |
+| **Modelo (ensemble)**    | **52.6%**| **0.979**|
+| Mercado (cuotas cierre)  |   54.9%  |   0.960  |
+
+El mercado de cierre (Pinnacle/B365 con el margen descontado) agrega
+información que las estadísticas públicas no tienen (alineaciones, lesiones,
+dinero informado): es el techo práctico. El modelo recupera la mayor parte de
+ese edge usando solo datos públicos, quedando a 2.2 puntos del mercado y +5.9
+sobre el baseline ingenuo. No se reporta ningún número que no esté en
+`models/metrics.json`.
+
+## Pipeline
 
 ```
-StatsBomb Open Data
-    └── statsbombpy (eventos por partido)
-            └── Rolling team stats (xG, xA, presiones, posesión — ventana 5/10 partidos)
-                    ├── LightGBM (Optuna 30 trials)
-                    ├── XGBoost  (Optuna 25 trials)
-                    └── Ensemble pesado → predicción + SHAP TreeExplainer
+football-data.co.uk (16 temporadas SP1.csv)
+        │  fetch_real_data.py
+        ▼
+Features con higiene temporal estricta (solo pasado):
+  Elo partido a partido (K=20, ventaja local 60) · goles/encajados rolling 5
+  tiros a puerta rolling 5 · forma (pts últimos 5) · medias por localía
+        │  train_real.py  (split temporal: train ≤22/23 · val 23/24 · test 24/25+25/26)
+        ▼
+LightGBM + XGBoost ensemble → models/*.pkl + metrics.json (incluye baseline del mercado)
 ```
 
 ## Stack
 
-| Componente | Tecnología |
-|---|---|
-| Datos | StatsBomb Open Data (statsbombpy) + synthetic fallback |
-| Modelos | LightGBM + XGBoost ensemble |
-| Hyperparams | Optuna (30 + 25 trials) |
-| Explicabilidad | SHAP TreeExplainer |
+| Componente | Tech |
+|------------|------|
+| Datos históricos | football-data.co.uk (CSV públicos, cuotas de cierre incluidas) |
+| Datos en vivo | API-Football v3 (clasificación + próximos partidos) |
+| Modelos | LightGBM + XGBoost (multiclase H/D/A) |
+| Rating | Elo calculado partido a partido |
 | API | FastAPI (puerto 8001) |
-| Split temporal | TimeSeriesSplit 70/15/15 |
 
-## Features
+## Entrenar
 
-- **Rolling stats** por equipo: xG for/against, xA, shots, pressures, posesión — media últimos 5 y 10 partidos
-- **Head-to-head** histórico: goles/xG en enfrentamientos directos
-- **Competición** como feature categórica (LaLiga, Champions, Copa)
-- **Condición** local/visitante
-
-## Métricas
-
-| Métrica | Valor |
-|---|---|
-| AUC-ROC | 0.71 |
-| Accuracy | 0.38 (3 clases: L/E/V) |
-| Dataset | ~3.200 partidos |
-| Features | 25+ |
+```bash
+cd scripts
+../venv/bin/python fetch_real_data.py   # descarga 16 temporadas + features + team_summary
+../venv/bin/python train_real.py        # entrena + evalúa vs mercado + guarda metrics.json
+```
 
 ## Endpoints
 
-```
-GET  /ml/sports/health          Estado del servicio
-GET  /ml/sports/stats           Métricas del modelo
-GET  /ml/sports/teams           Equipos disponibles
-GET  /ml/sports/competitions    Competiciones disponibles
-GET  /ml/sports/matches/recent  Últimos partidos analizados
-POST /ml/sports/predict         Predicción de partido
-GET  /ml/sports/match/{id}      Detalle de partido
-```
+- `GET /ml/sports/health` · `GET /ml/sports/stats` (métricas + baselines honestos)
+- `GET /ml/sports/teams` (Elo + forma actuales) · `POST /ml/sports/predict`
+- `GET /ml/sports/matches/recent` · `GET /ml/sports/match/{id}`
+- `GET /ml/sports/live/standings` · `GET /ml/sports/live/upcoming` (API-Football)
 
-### Ejemplo predict
-
-```bash
-curl -X POST http://localhost:8001/ml/sports/predict \
-  -H "Content-Type: application/json" \
-  -d '{"home_team": "Real Madrid", "away_team": "FC Barcelona", "competition": "La Liga"}'
-```
-
-```json
-{
-  "prediction": "Empate",
-  "confidence": 0.431,
-  "probabilities": {"home_win": 0.381, "draw": 0.431, "away_win": 0.188},
-  "shap_explanation": {...}
-}
-```
-
-## Instalación
-
-```bash
-git clone https://github.com/Chupacharcos/Sports-Performance-Engine.git
-cd Sports-Performance-Engine
-python -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
-python scripts/download_data.py   # Descarga StatsBomb Open Data
-python scripts/train.py           # Entrena modelos y genera artifacts/
-uvicorn api:app --port 8001
-```
-
-## Estructura
-
-```
-sports-engine/
-├── api.py              FastAPI app
-├── routers/sports.py   Endpoints
-├── scripts/
-│   ├── download_data.py   StatsBomb + synthetic fallback
-│   └── train.py           Entrena LightGBM + XGBoost
-├── artifacts/          Modelos serializados (excluidos de git)
-└── requirements.txt
-```
-
-## Licencia
-
-MIT
+> Predicción estadística con datos públicos. No es asesoramiento de apuestas.
